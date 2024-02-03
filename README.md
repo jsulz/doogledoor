@@ -1,0 +1,5 @@
+- run.py initializes the flask app and provides the context for it to run
+- poetry new is used to create the folder structure initially and is then used to manage the dependencies
+- requirements.txt is created as part of a pre-commit hook so that Docker can reconstruct the project dependencies with pip instead of having to bring in poetry during the build
+- poetry is also used to provide a local virtual environment for testing
+- The .gitignore keeps unnecessary Flask, pytest, VScode and Javascript build artifacts out of the repository
