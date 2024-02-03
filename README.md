@@ -11,3 +11,5 @@
   - db.py creates the connection to the database we're currently working with
   - model.py defines the database schema
   - [pakage].py is for the main application logic/routes
+- CI/CD is handled by GitHub Actions in the .github folder
+- The project is deployed to Google Cloud Run and run in a container. The Dockerfile defines the build process and compilation of that container.
