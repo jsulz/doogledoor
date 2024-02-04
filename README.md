@@ -15,3 +15,4 @@
 - The project is deployed to Google Cloud Run and run in a container. The Dockerfile defines the build process and compilation of that container.
 - The Dockerfile runs through building the JS assets and then passing them off to the Python runtime where we put the assets in the right location in the Flask app also install all of the required Python packages for the project
 - The Docker container is built inside of a GitHub Action (see .github/workflows/deploy.yml) and pushed to a Google Cloud project's artifact registry and then loaded into the cloud run service
+- Secrets are added as needed per https://github.com/google-github-actions/auth?tab=readme-ov-file#indirect-wif
