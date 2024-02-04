@@ -4,12 +4,22 @@
   "description": "Tracking the doogle",
   "main": "index.tsx",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "webpack --progress --config webpack.config.js",
+    "dev-build": "webpack --progress -d --config webpack.config.js",
+    "watch": "webpack --progress --config webpack.config.js --watch"
   },
   "author": "Jared Sulzdorf",
   "license": "ISC",
   "devDependencies": {
+    "@types/react": "^18.2.52",
+    "@types/react-dom": "^18.2.18",
+    "ts-loader": "^9.5.1",
+    "typescript": "^5.3.3",
     "webpack": "^5.90.1",
     "webpack-cli": "^5.1.4"
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
   }
 }
