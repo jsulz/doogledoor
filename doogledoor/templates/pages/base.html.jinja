@@ -1,0 +1,12 @@
+{% include "./partials/header.html.jinja" %}
+<title> DoogleDoor {% block title %}{% endblock %}</title>
+</head>
+
+<body>
+    {% include "./partials/nav.html.jinja" %}
+    <main>
+        <div>
+            {% block content%}{%endblock%}
+        </div>
+    </main>
+    {% include "./partials/footer.html.jinja" %}
