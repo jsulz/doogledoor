@@ -2,8 +2,9 @@
 {% block header %}Welcome to Sturmbaum{%
 endblock %}
 {% block content %}
-
-<p>Hello Doog</p>
-<div id="doogle"></div>
+<div>
+    <p>Hello Doog</p>
+    <div id="doogle"></div>
+</div>
 <script src="{{ url_for('static', filename='dist/bundle.js')}}"></script>
 {% endblock %}

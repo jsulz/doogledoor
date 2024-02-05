@@ -1,0 +1,55 @@
+/* CSS Variable overrides */
+:root {
+    --bs-link-color-rgb: var(--bs-secondary-rgb);
+    --bs-link-color-rgba: #d95229;
+    --bs-link-hover-color-rgb: #d95229;
+    --bs-primary-rgb: rgba(0, 0, 0, 0.65);
+    --bs-secondary-rgb: #FFF;
+    --bs-body-font-family: 'Protest Strike', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", "Liberation Sans", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    --bs-tertiary-rgb: #434b36;
+    --bs-tertiary-rgb-active: #1f6e56;
+    --bs-heading-color: #596447;
+    --bs-btn-hover-color: var(--bs-tertiary-rgb-active);
+}
+
+/* Global */
+
+::selection {
+    background: var(--bs-link-color-rgba)
+}
+
+html,
+body {
+  height: 100%;
+  background: var(--bs-primary-rgb);
+  color: var(--bs-secondary-rgb)
+}
+
+body {
+  display: -ms-flexbox;
+  display: -webkit-box;
+  display: flex;
+  -ms-flex-pack: center;
+  -webkit-box-pack: center;
+  justify-content: center;
+}
+
+a, a.nav-link {
+    color: var(--bs-link-color-rgb);
+    text-decoration: underline; 
+}
+
+.navbar-brand {
+    color: var(--bs-link-color-rgb);
+}
+
+/*
+ * Header
+ */
+.masthead {
+  margin-bottom: 2rem;
+}
+
+.masthead-brand {
+  margin-bottom: 0;
+}
