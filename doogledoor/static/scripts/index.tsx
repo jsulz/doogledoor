@@ -1,10 +1,5 @@
 import * as React from "react"
 import * as ReactDom from "react-dom"
+import DoogleDoor from "./doogledoor" 
 
-ReactDom.render(<HelloWorld />, document.getElementById("doogle"))
-
-function HelloWorld(){
-    return(
-        <p>Hello Doogle World</p>
-    )
-}
+ReactDom.render(<DoogleDoor />, document.getElementById("doogle"))

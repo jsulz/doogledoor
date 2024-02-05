@@ -13,6 +13,7 @@
   "devDependencies": {
     "@types/react": "^18.2.52",
     "@types/react-dom": "^18.2.18",
+    "@types/recharts": "^1.8.29",
     "ts-loader": "^9.5.1",
     "typescript": "^5.3.3",
     "webpack": "^5.90.1",
@@ -20,6 +21,7 @@
   },
   "dependencies": {
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "recharts": "^2.11.0"
   }
 }
