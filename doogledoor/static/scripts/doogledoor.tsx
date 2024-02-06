@@ -13,69 +13,6 @@ import {
 import { Payload } from "recharts/types/component/DefaultLegendContent";
 import * as bootstrap from "bootstrap";
 
-let dailyData = [
-  {
-    hour: "6:00",
-    dd: 5,
-  },
-  {
-    hour: "7:00",
-    dd: 7,
-  },
-  {
-    hour: "8:00",
-    dd: 2,
-  },
-  {
-    hour: "9:00",
-    dd: 3,
-  },
-  {
-    hour: "10:00",
-    dd: 4,
-  },
-  {
-    hour: "11:00",
-    dd: 5,
-  },
-  {
-    hour: "12:00",
-    dd: 0,
-  },
-  {
-    hour: "13:00",
-    dd: 10,
-  },
-  {
-    hour: "14:00",
-    dd: 2,
-  },
-  {
-    hour: "15:00",
-    dd: 2,
-  },
-  {
-    hour: "16:00",
-    dd: 0,
-  },
-  {
-    hour: "17:00",
-    dd: 2,
-  },
-  {
-    hour: "18:00",
-    dd: 6,
-  },
-  {
-    hour: "19:00",
-    dd: 5,
-  },
-  {
-    hour: "20:00",
-    dd: 20,
-  },
-];
-
 interface Doogles {
   time: string;
   dd: number;
@@ -84,28 +21,37 @@ interface Doogles {
 export default function DoogleDoor() {
   const [time, setTime] = useState("today");
   const [chartData, setChartData] = useState([]);
+  const [doogleCount, setDoogleCount] = useState(0);
 
   useEffect(() => {
     const paramString = "time=" + time;
     const params = new URLSearchParams(paramString);
     fetch("/api/v1/doogles?" + params)
       .then((response) => response.json())
-      .then((data) => setChartData(data));
+      .then((data) => {
+        const initial = 0;
+        const newDoogleCount = data.reduce(
+          (accumulator: number, current: Doogles) => accumulator + current.dd,
+          initial
+        );
+        setDoogleCount(newDoogleCount);
+        setChartData(data);
+      });
   }, [time]);
 
   return (
     <>
-      <DoogleCount />
+      <DoogleCount count={doogleCount} />
       <TimeSelectors changeTime={setTime} currentTime={time} />
       <DoogleChart data={chartData} />
     </>
   );
 }
 
-function DoogleCount() {
+function DoogleCount({ count }: { count: number }) {
   return (
     <div className="mb-5">
-      <h1 className="doogle-heading">42</h1>
+      <h1 className="doogle-heading">{count}</h1>
       <p className="">Today's Total</p>
     </div>
   );
