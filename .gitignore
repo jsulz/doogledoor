@@ -15,6 +15,7 @@ build/
 
 # VS Code .gitignore based off of https://github.com/github/gitignore/blob/main/Global/VisualStudioCode.gitignore
 
+.vscode/
 .vscode/*
 !.vscode/settings.json
 !.vscode/tasks.json
