@@ -4,6 +4,24 @@ endblock %}
 {% block content %}
 <div class="mt-5">
     <div id="doogle"></div>
+    <div class="modal fade" id="doogleExplainer" aria-hidden="true" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="doogleExplainerLabel">What???</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" style="color:black; text-align:left">
+                    <p>You might be asking, "What is 'Doogle'?" or "What are these ins and outs?"</p>
+                    <p>A doogle is a dog.</p>
+                    <p>A single count on this bar chart corresponds to a doogle passing by a doogle door to go outside
+                        or inside.</p>
+                    <p>Pretty simple!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </div>
 <script src="{{ url_for('static', filename='dist/bundle.js')}}"></script>
 {% endblock %}

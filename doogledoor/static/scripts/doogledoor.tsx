@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import {
   ResponsiveContainer,
   CartesianGrid,
@@ -10,6 +10,8 @@ import {
   Bar,
   Rectangle,
 } from "recharts";
+import { Payload } from "recharts/types/component/DefaultLegendContent";
+import * as bootstrap from "bootstrap";
 
 let dailyData = [
   {
@@ -74,13 +76,28 @@ let dailyData = [
   },
 ];
 
+interface Doogles {
+  time: string;
+  dd: number;
+}
+
 export default function DoogleDoor() {
-  const one = 1;
+  const [time, setTime] = useState("today");
+  const [chartData, setChartData] = useState([]);
+
+  useEffect(() => {
+    const paramString = "time=" + time;
+    const params = new URLSearchParams(paramString);
+    fetch("/api/v1/doogles?" + params)
+      .then((response) => response.json())
+      .then((data) => setChartData(data));
+  }, [time]);
+
   return (
     <>
       <DoogleCount />
-      <TimeSelectors />
-      <DoogleChart />
+      <TimeSelectors changeTime={setTime} currentTime={time} />
+      <DoogleChart data={chartData} />
     </>
   );
 }
@@ -94,64 +111,55 @@ function DoogleCount() {
   );
 }
 
-function TimeSelectors() {
+function TimeSelectors({
+  changeTime,
+  currentTime,
+}: {
+  changeTime: React.Dispatch<React.SetStateAction<string>>;
+  currentTime: string;
+}) {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    changeTime(e.target.name);
+  };
+
+  const times = ["today", "week", "month", "year"];
   return (
     <>
       <div className="btn-group mb-5 btn-group-lg">
-        <input
-          type="radio"
-          className="btn-check"
-          name="btnradio"
-          id="btnradio1"
-          autoComplete="off"
-          checked
-        />
-        <label className="btn btn-outline-primary" htmlFor="btnradio1">
-          Today
-        </label>
-        <input
-          type="radio"
-          className="btn-check"
-          name="btnradio"
-          id="btnradio1"
-          autoComplete="off"
-        />
-        <label className="btn btn-outline-primary" htmlFor="btnradio1">
-          Past Week
-        </label>
-        <input
-          type="radio"
-          className="btn-check"
-          name="btnradio"
-          id="btnradio2"
-          autoComplete="off"
-        />
-        <label className="btn btn-outline-primary" htmlFor="btnradio2">
-          Past Month
-        </label>
-
-        <input
-          type="radio"
-          className="btn-check"
-          name="btnradio"
-          id="btnradio3"
-          autoComplete="off"
-        />
-        <label className="btn btn-outline-primary" htmlFor="btnradio3">
-          Past Year
-        </label>
+        {times.map((time) => {
+          return (
+            <>
+              <input
+                type="radio"
+                className="btn-check"
+                name={time}
+                id={time}
+                autoComplete="off"
+                onChange={(e) => handleChange(e)}
+                checked={currentTime === time}
+              />
+              <label className="btn btn-outline-primary" htmlFor={time}>
+                {time}
+              </label>
+            </>
+          );
+        })}
       </div>
     </>
   );
 }
 
-function DoogleChart() {
+function DoogleChart({ data }: { data: Doogles[] }) {
+  const handleClick = (): void => {
+    const myModal = new bootstrap.Modal("#doogleExplainer");
+    myModal.show();
+  };
   return (
     <ResponsiveContainer width="100%" height={300}>
       <BarChart
         width={500}
         height={300}
-        data={dailyData}
+        data={data}
         margin={{
           top: 5,
           right: 30,
@@ -159,13 +167,13 @@ function DoogleChart() {
           bottom: 5,
         }}
       >
-        <XAxis dataKey="hour" />
+        <XAxis dataKey="time" />
         <YAxis dataKey="dd" />
         <Tooltip />
-        <Legend />
+        <Legend onClick={handleClick} />
         <Bar
           dataKey="dd"
-          name="Doogle Ins and Outs"
+          name="Doogle Ins and Outs*"
           fill="#61adc2"
           activeBar={<Rectangle fill="#C29F61" />}
         />
