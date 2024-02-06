@@ -52,7 +52,7 @@ function DoogleCount({ count }: { count: number }) {
   return (
     <div className="mb-5">
       <h1 className="doogle-heading">{count}</h1>
-      <p className="">Today's Total</p>
+      <p className="">Total</p>
     </div>
   );
 }
