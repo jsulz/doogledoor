@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, request, jsonify, make_response
 import os
+import base64
 
 # from doogledoor.db import database
 # from doogledoor.model import DoogleDoor
@@ -25,8 +26,10 @@ def doogles():
         if bearer_token != os.environ["BEARER_TOKEN"]:
             return make_response(jsonify({"Error": "Incorrect bearer token"}), 401)
 
-        print(request.get_data())
-        print(request.get_json())
+        message = request.get_json()
+        data = base64.b64decode(message["data"])
+
+        print(data)
 
         return make_response("Okay", 200)
     if request.method == "GET":
