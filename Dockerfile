@@ -31,4 +31,4 @@ ENV HOST 0.0.0.0
 EXPOSE 8888
 # Run the gunicorn server - "run:app" is because we've imported the create_app() function
 # from the doogledoor/app.py which is where we do most of the app setup
-CMD [ "gunicorn", "-b", "0.0.0.0:8888", "run:app" ]
+CMD [ "gunicorn", "-b", "0.0.0.0:8888", "--workers", "1", "--threads", "8", "--timeout", "0", "run:app" ]
