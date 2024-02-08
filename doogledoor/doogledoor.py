@@ -1,4 +1,5 @@
 from flask import Blueprint, render_template, request, jsonify, make_response
+import os
 
 # from doogledoor.db import database
 # from doogledoor.model import DoogleDoor
@@ -13,8 +14,21 @@ def home():
     return render_template("pages/home.html.jinja")
 
 
-@doog.route("/api/v1/doogles", methods=["GET"])
+@doog.route("/api/v1/doogles", methods=["GET", "POST"])
 def doogles():
+    if request.method == "POST":
+        try:
+            bearer_token = request.headers["Authorization"]
+        except KeyError:
+            return make_response(jsonify({"Error": "Authorization not provided"}), 401)
+
+        if bearer_token != os.environ["BEARER_TOKEN"]:
+            return make_response(jsonify({"Error": "Incorrect bearer token"}), 401)
+
+        print(request.get_data())
+        print(request.get_json())
+
+        return make_response("Okay", 200)
     if request.method == "GET":
         try:
             time = request.args["time"]

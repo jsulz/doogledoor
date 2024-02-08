@@ -26,17 +26,23 @@ export default function DoogleDoor() {
   useEffect(() => {
     const paramString = "time=" + time;
     const params = new URLSearchParams(paramString);
+    let active = true;
     fetch("/api/v1/doogles?" + params)
       .then((response) => response.json())
       .then((data) => {
-        const initial = 0;
-        const newDoogleCount = data.reduce(
-          (accumulator: number, current: Doogles) => accumulator + current.dd,
-          initial
-        );
-        setDoogleCount(newDoogleCount);
-        setChartData(data);
+        if (active) {
+          const initial = 0;
+          const newDoogleCount = data.reduce(
+            (accumulator: number, current: Doogles) => accumulator + current.dd,
+            initial
+          );
+          setDoogleCount(newDoogleCount);
+          setChartData(data);
+        }
       });
+    return () => {
+      active = false;
+    };
   }, [time]);
 
   return (
