@@ -2,9 +2,10 @@ from flask import Blueprint, render_template, request, jsonify, make_response
 import os
 import base64
 
-# from doogledoor.db import database
-# from doogledoor.model import DoogleDoor
-import sqlalchemy
+from doogledoor.db import database
+
+from doogledoor.model import DoogleDoor
+from sqlalchemy import insert
 
 doog = Blueprint("doogledoor", __name__, template_folder="templates")
 
@@ -27,11 +28,16 @@ def doogles():
             return make_response(jsonify({"Error": "Incorrect bearer token"}), 401)
 
         message = request.get_json()
-        data = base64.b64decode(message["data"])
+        data = base64.b64decode(message["messages"]["data"]).decode("utf-8")
 
-        print(data)
+        with database.connect() as conn:
+            stmt = insert(DoogleDoor).values(published=data)
+            conn.execute(stmt)
+            conn.commit()
 
-        return make_response("Okay", 200)
+        return make_response(
+            jsonify({"Success": "Message successfully published"}), 200
+        )
     if request.method == "GET":
         try:
             time = request.args["time"]
