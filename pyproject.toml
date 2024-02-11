@@ -12,6 +12,7 @@ gunicorn = "^21.2.0"
 SQLAlchemy = "^2.0.25"
 pg8000 = "^1.30.4"
 cloud-sql-python-connector = "^1.6.0"
+pandas = "^2.2.0"
 
 
 [build-system]

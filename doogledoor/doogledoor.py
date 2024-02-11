@@ -3,9 +3,12 @@ import os
 import base64
 
 from doogledoor.db import database
-
+import datetime
+from dateutil import tz
 from doogledoor.model import DoogleDoor
-from sqlalchemy import insert
+from sqlalchemy import insert, select
+import pandas as pd
+import calendar
 
 doog = Blueprint("doogledoor", __name__, template_folder="templates")
 
@@ -49,21 +52,78 @@ def doogles():
         MONTHLY = "month"
         YEARLY = "year"
 
+        pst = tz.gettz("America/Los_Angeles")
+        stmt = (
+            select(DoogleDoor)
+            .where(DoogleDoor.published_tz > datetime.datetime(2024, 2, 11, tzinfo=pst))
+            .where(DoogleDoor.published_tz < datetime.datetime(2024, 2, 12, tzinfo=pst))
+        )
+        data = []
+        with database.connect() as conn:
+            for row in conn.execute(stmt).all():
+                data.append([row[1], row[2]])
+
         if time == TODAY:
-            api_response = jsonify(daily_data)
+            response = build_df(data, "h")
+            final = []
+            for key, value in response.items():
+                hour = key.hour
+                final.append({"time": hour, "dd": value})
+
+            api_response = jsonify(final)
 
         if time == WEEKLY:
-            api_response = jsonify(weekly_data)
+            response = get_response("week.csv", "D")
+            final = []
+            for key, value in response.items():
+                day = f"{key.month}/{key.day}"
+                final.append({"time": day, "dd": value})
+
+            api_response = jsonify(final)
 
         if time == MONTHLY:
-            api_response = jsonify(monthly_data)
+            # api_response = jsonify(monthly_data)
+            response = get_response("month.csv", "D")
+            final = []
+            for key, value in response.items():
+                day = f"{key.month}/{key.day}"
+                final.append({"time": day, "dd": value})
+
+            api_response = jsonify(final)
 
         if time == YEARLY:
-            api_response = jsonify(yearly_data)
+            response = get_response("year.csv", "ME")
+            final = []
+            for key, value in response.items():
+                day = f"{calendar.month_name[key.month]}"
+                final.append({"time": day, "dd": value})
+
+            api_response = jsonify(final)
 
         return make_response(api_response, 200)
 
     return make_response(jsonify({"Error": "Method not supported"}), 405)
+
+
+def get_response(file, frequency):
+    df = pd.read_csv(
+        f"test_data/{file}",
+        header=None,
+        names=["epoch", "timestamptz"],
+    )
+
+    df["timestamptz"] = pd.to_datetime(df["timestamptz"])
+    df = pd.DataFrame(df.set_index("timestamptz").resample(frequency).count())
+
+    return df["epoch"].to_dict()
+
+
+def build_df(data, frequency):
+    df = pd.DataFrame(data, columns=["epoch", "timestamptz"])
+    df["timestamptz"] = pd.to_datetime(df["timestamptz"])
+    df = pd.DataFrame(df.set_index("timestamptz").resample(frequency).count())
+
+    return df["epoch"].to_dict()
 
 
 daily_data = [
