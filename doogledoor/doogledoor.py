@@ -6,9 +6,10 @@ from doogledoor.db import database
 import datetime
 from dateutil import tz
 from doogledoor.model import DoogleDoor
-from sqlalchemy import insert, select
+from sqlalchemy import insert, select, text
 import pandas as pd
 import calendar
+import time
 
 doog = Blueprint("doogledoor", __name__, template_folder="templates")
 
@@ -34,7 +35,9 @@ def doogles():
         data = base64.b64decode(message["messages"]["data"]).decode("utf-8")
 
         with database.connect() as conn:
-            stmt = insert(DoogleDoor).values(published=data)
+            # stmt = insert(DoogleDoor).values(published=data)
+            stmt_text = f"INSERT INTO usage (published, published_tz) VALUES ({message}, to_timestamp({message}))"
+            stmt = text(stmt_text)
             conn.execute(stmt)
             conn.commit()
 
@@ -43,7 +46,7 @@ def doogles():
         )
     if request.method == "GET":
         try:
-            time = request.args["time"]
+            window = request.args["time"]
         except KeyError:
             return make_response(jsonify({"Error": "Time attribute not provided"}), 500)
 
@@ -53,26 +56,41 @@ def doogles():
         YEARLY = "year"
 
         pst = tz.gettz("America/Los_Angeles")
-        stmt = (
-            select(DoogleDoor)
-            .where(DoogleDoor.published_tz > datetime.datetime(2024, 2, 11, tzinfo=pst))
-            .where(DoogleDoor.published_tz < datetime.datetime(2024, 2, 12, tzinfo=pst))
-        )
-        data = []
-        with database.connect() as conn:
-            for row in conn.execute(stmt).all():
-                data.append([row[1], row[2]])
+        curr_datetime = datetime.datetime.fromtimestamp(time.time(), tz=pst)
 
-        if time == TODAY:
+        # stmt = (
+        #    select(DoogleDoor)
+        #    .where(DoogleDoor.published_tz > datetime.datetime(2024, 2, 11, tzinfo=pst))
+        #    .where(DoogleDoor.published_tz < datetime.datetime(2024, 2, 12, tzinfo=pst))
+        # )
+        # data = []
+        # with database.connect() as conn:
+        #    for row in conn.execute(stmt).all():
+        #        data.append([row[1], row[2]])
+
+        if window == TODAY:
+            today_date = datetime.datetime(
+                year=curr_datetime.year,
+                month=curr_datetime.month,
+                day=curr_datetime.day,
+                tzinfo=pst,
+            )
+            tomorrow_date = today_date + datetime.timedelta(days=1)
+
+            data = query_db(today_date, tomorrow_date, pst)
+
+            print(data)
+
             response = build_df(data, "h")
+            # response = get_response("today.csv", "h")
             final = []
             for key, value in response.items():
-                hour = key.hour
+                hour = f"{key.hour}:00"
                 final.append({"time": hour, "dd": value})
 
             api_response = jsonify(final)
 
-        if time == WEEKLY:
+        if window == WEEKLY:
             response = get_response("week.csv", "D")
             final = []
             for key, value in response.items():
@@ -81,7 +99,7 @@ def doogles():
 
             api_response = jsonify(final)
 
-        if time == MONTHLY:
+        if window == MONTHLY:
             # api_response = jsonify(monthly_data)
             response = get_response("month.csv", "D")
             final = []
@@ -91,7 +109,7 @@ def doogles():
 
             api_response = jsonify(final)
 
-        if time == YEARLY:
+        if window == YEARLY:
             response = get_response("year.csv", "ME")
             final = []
             for key, value in response.items():
@@ -123,7 +141,40 @@ def build_df(data, frequency):
     df["timestamptz"] = pd.to_datetime(df["timestamptz"])
     df = pd.DataFrame(df.set_index("timestamptz").resample(frequency).count())
 
+    # Remove the boundary counts we created in query db
+    df["epoch"].iloc[0] = df["epoch"].iloc[0] - 1
+    df["epoch"].iloc[-1] = df["epoch"].iloc[-1] - 1
+
     return df["epoch"].to_dict()
+
+
+def query_db(lower_bounds, upper_bounds, timezone):
+    stmt = (
+        select(DoogleDoor)
+        .where(DoogleDoor.published_tz > lower_bounds)
+        .where(DoogleDoor.published_tz < upper_bounds)
+    )
+    data = []
+    print(lower_bounds.timestamp(), upper_bounds.timestamp() - 1)
+    with database.connect() as conn:
+        for row in conn.execute(stmt).all():
+            data.append([row[1], row[2].astimezone(timezone)])
+
+    # Add boundary counts
+    data.insert(
+        0,
+        [
+            lower_bounds.timestamp(),
+            datetime.datetime.fromtimestamp(lower_bounds.timestamp(), tz=timezone),
+        ],
+    )
+    data.append(
+        [
+            upper_bounds.timestamp() - 1,
+            datetime.datetime.fromtimestamp(upper_bounds.timestamp() - 1, tz=timezone),
+        ],
+    )
+    return data
 
 
 daily_data = [
