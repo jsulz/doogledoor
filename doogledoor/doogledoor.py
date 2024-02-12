@@ -36,7 +36,7 @@ def doogles():
 
         with database.connect() as conn:
             # stmt = insert(DoogleDoor).values(published=data)
-            stmt_text = f"INSERT INTO usage (published, published_tz) VALUES ({message}, to_timestamp({message}))"
+            stmt_text = f"INSERT INTO usage (published, published_tz) VALUES ({data}, to_timestamp({data}))"
             stmt = text(stmt_text)
             conn.execute(stmt)
             conn.commit()
