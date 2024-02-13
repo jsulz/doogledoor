@@ -10,11 +10,11 @@ This repository hosts the Flask application that is responsible for storing data
 
 There's a fair amount of boilerplate code here, so if you're interested, check out the following files where most of the logic is contained:
 
-- `doogledoor.py`
+- `doogledoor/doogledoor.py`
   - Contains all the routes for the web application
   - Responsible for responding to POST requests from the Thing Plus and storing the data in a Cloud SQL Postgres database
   - Pulls the data from the same database and shapes it for the front end
-- `doogledoor.tsx`
+- `doogledoor/static/scripts/doogledoor.tsx`
   - Manages the display of the data from the backend (and makes the GET requests to the Flask API to get the data)
   - Includes the functionality for showing the chart and changing the date ranges
 
