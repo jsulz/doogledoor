@@ -1,18 +1,21 @@
-- run.py initializes the flask app and provides the context for it to run
-- poetry new is used to create the folder structure initially and is then used to manage the dependencies
-- requirements.txt is created as part of a pre-commit hook so that Docker can reconstruct the project dependencies with pip instead of having to bring in poetry during the build
-- poetry is also used to provide a local virtual environment for testing
-- The .gitignore keeps unnecessary Flask, pytest, VScode and Javascript build artifacts out of the repository
-- Most of the project itself is held inside the directory of the same name as the repository; there we have folders for:
-  - static (contains all static files (.css and image files) as well as our Javascript + React + Typescript files)
-  - templates (holds all the jinja files for different routes)
-- In this folder the main files for running the app are available as well
-  - app.py creates the Flask application and loads any context for the application (Blueprints, database connections, testing configurations, application configuration, etc)
-  - db.py creates the connection to the database we're currently working with
-  - model.py defines the database schema
-  - [pakage].py is for the main application logic/routes
-- CI/CD is handled by GitHub Actions in the .github folder
-- The project is deployed to Google Cloud Run and run in a container. The Dockerfile defines the build process and compilation of that container.
-- The Dockerfile runs through building the JS assets and then passing them off to the Python runtime where we put the assets in the right location in the Flask app also install all of the required Python packages for the project
-- The Docker container is built inside of a GitHub Action (see .github/workflows/deploy.yml) and pushed to a Google Cloud project's artifact registry and then loaded into the cloud run service
-- Secrets are added as needed per https://github.com/google-github-actions/auth?tab=readme-ov-file#indirect-wif
+# Doogledoor
+
+## Description
+
+Doogledoor is the web side of an Internet of Things project to track the family dog's ins and outs through her dog door.
+
+The firmware part of this project runs on a [Thing Plus - ESP32-S2](https://www.sparkfun.com/products/17743) and makes use of an [OpenPIR motion sensor](https://www.sparkfun.com/products/13968). The code and relevant links for that are available in the [Dooglebot repository](https://github.com/jsulz/dooglebot).
+
+This repository hosts the Flask application that is responsible for storing data sent by the Thing Plus and displaying it (see: https://doogledoor.jsulz.com/).
+
+There's a fair amount of boilerplate code here, so if you're interested, check out the following files where most of the logic is contained:
+
+- `doogledoor.py`
+  - Contains all the routes for the web application
+  - Responsible for responding to POST requests from the Thing Plus and storing the data in a Cloud SQL Postgres database
+  - Pulls the data from the same database and shapes it for the front end
+- `doogledoor.tsx`
+  - Manages the display of the data from the backend (and makes the GET requests to the Flask API to get the data)
+  - Includes the functionality for showing the chart and changing the date ranges
+
+If you have any questions, feel free to [let me know](https://www.jsulz.com/contact/)!
