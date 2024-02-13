@@ -30,3 +30,5 @@ build/
 *.vsix
 
 **/node_modules
+
+.env

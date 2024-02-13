@@ -1,0 +1,39 @@
+{% extends "/pages/base.html.jinja" %}
+{% block content %}
+<div class="row justify-content-center about text-start">
+    <div class="p-2 mb-4 bg-body-tertiary-rgba rounded-3 col-10">
+        <div class="container-fluid py-2">
+            <div class="col-md-12">
+                <p class="lead">Doogledoor is where internet of things (<abbr title="Internet of things">IoT</abbr>)
+                    meets doogles.</p>
+                <p>IoT likely needs little explanation, but "doogle" might be confusing. Simply put, a "doogle" is a
+                    dog. More specifically, the doogle that this site purports to track is our family dog, Moraine.</p>
+                <p>Moraine is 50% German Shepherd and 100% crazy doogle. </p>
+                <p>This project began when I was looking to use some spare components from other IoT projects and my
+                    wife suggested that we track how often Moraine uses the dog door. This door is built into the
+                    sliding glass door
+                    that goes out to our deck and backyard, and is used predominately by the doogle. To make this go, I
+                    used the following components from Sparkfun:</p>
+                <ul>
+                    <li>Thing Plus - ESP32-S2 WROOM</li>
+                    <li>OpenPIR</li>
+                </ul>
+                <p>The code that runs the Thing Plus is written in C++ and available on GitHub.</p>
+                <p>As for how you're seeing this website? That's also all available on GiHub with the full stack as
+                    follows:</p>
+                <ul>
+                    <li><a href="https://cloud.google.com/?hl=en">Google Cloud Platform</a> (specifically <a
+                            href="https://cloud.google.com/run?hl=en">Cloud Run</a>, <a
+                            href="https://cloud.google.com/sql?hl=en">Cloud SQL</a>, and <a
+                            href="https://cloud.google.com/artifact-registry">Artifact Registry</a>)</li>
+                    <li><a href="https://www.docker.com/">Docker</a></li>
+                    <li><a href="https://flask.palletsprojects.com/en/3.0.x/">Flask</a></li>
+                    <li><a href="https://react.dev/">React</a> + <a href="https://recharts.org/en-US/">Recharts</a></li>
+                    <li><a href="https://getbootstrap.com/">Bootstrap</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

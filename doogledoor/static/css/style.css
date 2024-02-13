@@ -6,9 +6,11 @@
   --bs-btn-bg: #c27f61;
   --bs-primary-rgb: #353f42;
   --bs-secondary-rgb: #fff;
+  --bg-body-tertiary-rgba: #ffffffa2;
   --bs-body-font-family: "Protest Strike", system-ui, -apple-system, "Segoe UI",
     Roboto, "Helvetica Neue", "Noto Sans", "Liberation Sans", Arial, sans-serif,
     "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --body-serif-font-family: "Zilla Slab", "Times New Roman", Times, serif;
   --bs-tertiary-rgb: #61adc2;
   --bs-tertiary-rgb-active: #1f6e56;
   --bs-heading-color: #c29f61;
@@ -37,6 +39,12 @@ body {
   justify-content: center;
 }
 
+.about {
+  font-family: var(--body-serif-font-family);
+  color: #353f42;
+  font-size: 18px;
+}
+
 a,
 a.nav-link {
   color: var(--bs-link-color-rgb);
@@ -54,6 +62,10 @@ a:active,
 
 .navbar-brand {
   color: var(--bs-link-color-rgb);
+}
+
+nav {
+  background: var(--bs-primary-rgb);
 }
 
 /*
@@ -85,4 +97,8 @@ a:active,
   --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
   --bs-btn-disabled-bg: transparent;
   --bs-gradient: none;
+}
+
+.bg-body-tertiary-rgba {
+  background: var(--bg-body-tertiary-rgba);
 }

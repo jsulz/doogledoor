@@ -1,12 +1,12 @@
-{% include "./partials/header.html.jinja" %}
+{% include "partials/header.html.jinja" %}
 <title> DoogleDoor {% block title %}{% endblock %}</title>
 </head>
 
 <body class="text-center">
     <div class="container d-flex h-100 flex-column">
-        {% include "./partials/nav.html.jinja" %}
+        {% include "partials/nav.html.jinja" %}
 
         <main role="main">
             {% block content%}{%endblock%}
         </main>
-        {% include "./partials/footer.html.jinja" %}
+        {% include "partials/footer.html.jinja" %}

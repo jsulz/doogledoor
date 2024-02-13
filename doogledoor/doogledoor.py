@@ -1,15 +1,14 @@
-from flask import Blueprint, render_template, request, jsonify, make_response
 import os
 import base64
-
-from doogledoor.db import database
 import datetime
-from dateutil import tz
-from doogledoor.model import DoogleDoor
-from sqlalchemy import insert, select, text
-import pandas as pd
 import calendar
 import time
+from dateutil import tz
+from flask import Blueprint, render_template, request, jsonify, make_response
+from sqlalchemy import select, text
+import pandas as pd
+from doogledoor.db import database
+from doogledoor.model import DoogleDoor
 
 doog = Blueprint("doogledoor", __name__, template_folder="templates")
 
@@ -18,6 +17,11 @@ doog = Blueprint("doogledoor", __name__, template_folder="templates")
 def home():
 
     return render_template("pages/home.html.jinja")
+
+
+@doog.route("/about", methods=["GET"])
+def about():
+    return render_template("pages/about.html.jinja")
 
 
 @doog.route("/api/v1/doogles", methods=["GET", "POST"])
@@ -64,15 +68,6 @@ def doogles():
             tzinfo=pst,
         )
         tomorrow_date = today_date + datetime.timedelta(days=1)
-        # stmt = (
-        #    select(DoogleDoor)
-        #    .where(DoogleDoor.published_tz > datetime.datetime(2024, 2, 11, tzinfo=pst))
-        #    .where(DoogleDoor.published_tz < datetime.datetime(2024, 2, 12, tzinfo=pst))
-        # )
-        # data = []
-        # with database.connect() as conn:
-        #    for row in conn.execute(stmt).all():
-        #        data.append([row[1], row[2]])
 
         if window == TODAY:
             data = query_db(today_date, tomorrow_date, pst)
@@ -99,9 +94,6 @@ def doogles():
             api_response = jsonify(final)
 
         if window == MONTHLY:
-            # api_response = jsonify(monthly_data)
-            # response = get_response("month.csv", "D")
-
             four_weeks_ago = today_date - datetime.timedelta(days=27)
             data = query_db(four_weeks_ago, tomorrow_date, pst)
             response = build_df(data, "D")
@@ -116,7 +108,6 @@ def doogles():
             one_year_ago = today_date - datetime.timedelta(days=364)
             data = query_db(one_year_ago, tomorrow_date, pst)
             response = build_df(data, "ME")
-            # response = get_response("year.csv", "ME")
             final = []
             for key, value in response.items():
                 day = f"{calendar.month_name[key.month]}"
@@ -127,19 +118,6 @@ def doogles():
         return make_response(api_response, 200)
 
     return make_response(jsonify({"Error": "Method not supported"}), 405)
-
-
-def get_response(file, frequency):
-    df = pd.read_csv(
-        f"test_data/{file}",
-        header=None,
-        names=["epoch", "timestamptz"],
-    )
-
-    df["timestamptz"] = pd.to_datetime(df["timestamptz"])
-    df = pd.DataFrame(df.set_index("timestamptz").resample(frequency).count())
-
-    return df["epoch"].to_dict()
 
 
 def build_df(data, frequency):
