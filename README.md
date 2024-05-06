@@ -2,7 +2,7 @@
 
 ## Description
 
-Doogledoor is the web side of an Internet of Things project to track the family dog's ins and outs through her dog door.
+Doogledoor is the web side of an Internet of Things project to track the family dog's ins and outs through her door.
 
 The firmware part of this project runs on a [Thing Plus - ESP32-S2](https://www.sparkfun.com/products/17743) and makes use of an [OpenPIR motion sensor](https://www.sparkfun.com/products/13968). The code and relevant links for that are available in the [Dooglebot repository](https://github.com/jsulz/dooglebot).
 
